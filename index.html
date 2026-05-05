@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLIP EMPIRE — Full-Time Short-Form Video Editor Course</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --accent: #ff3c3c;
+    --gold: #f5c842;
+    --teal: #00d4a1;
+    --purple: #a259ff;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --border: rgba(255,255,255,0.07);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── STICKY NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  nav .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: var(--accent);
+  }
+
+  nav .logo span { color: var(--gold); }
+
+  nav .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+
+  nav .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,60,60,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(162,89,255,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 20% 70%, rgba(0,212,161,0.08) 0%, transparent 55%);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,60,60,0.1);
+    border: 1px solid rgba(255,60,60,0.3);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,60,60,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(255,60,60,0); }
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: 4px;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 { color: var(--accent); }
+  .hero h1 .line3 { color: var(--gold); }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin: 20px auto 36px;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  .scroll-hint svg { opacity: 0.4; }
+
+  /* ── SECTION BASE ── */
+  section { position: relative; z-index: 1; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── MODULE TRACK ── */
+  .module-track {
+    padding: 100px 0;
+  }
+
+  .track-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+
+  .section-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    letter-spacing: 3px;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .section-title span { color: var(--gold); }
+
+  /* ── MODULE CARD ── */
+  .module {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    background: var(--card);
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: default;
+  }
+
+  .module:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .module-number-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .module-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    line-height: 1;
+    color: rgba(255,255,255,0.12);
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .module-icon {
+    font-size: 2.8rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .module-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 12px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .module-body {
+    padding: 36px 36px 36px 28px;
+    border-left: 1px solid var(--border);
+  }
+
+  .module-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .module-title .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .module-desc {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+
+  .lessons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .lesson {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #b0b0cc;
+  }
+
+  .lesson-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  .verse-box {
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-top: 20px;
+  }
+
+  .verse-text {
+    font-style: italic;
+    font-size: 0.88rem;
+    color: #c8c890;
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+
+  .verse-ref {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  /* MODULE COLOR THEMES */
+  .m1 .module-number-panel { background: linear-gradient(135deg, #1a0a0a, #2a0f0f); }
+  .m1 .module-tag { background: rgba(255,60,60,0.15); color: var(--accent); }
+  .m1 .lesson-dot { background: var(--accent); }
+
+  .m2 .module-number-panel { background: linear-gradient(135deg, #0a1a12, #0d2a1a); }
+  .m2 .module-tag { background: rgba(0,212,161,0.12); color: var(--teal); }
+  .m2 .lesson-dot { background: var(--teal); }
+
+  .m3 .module-number-panel { background: linear-gradient(135deg, #12100a, #231e0a); }
+  .m3 .module-tag { background: rgba(245,200,66,0.12); color: var(--gold); }
+  .m3 .lesson-dot { background: var(--gold); }
+
+  .m4 .module-number-panel { background: linear-gradient(135deg, #120a1a, #1e0d2a); }
+  .m4 .module-tag { background: rgba(162,89,255,0.12); color: var(--purple); }
+  .m4 .lesson-dot { background: var(--purple); }
+
+  .m5 .module-number-panel { background: linear-gradient(135deg, #0a0f1a, #0d162a); }
+  .m5 .module-tag { background: rgba(66,145,245,0.12); color: #4291f5; }
+  .m5 .lesson-dot { background: #4291f5; }
+
+  .m6 .module-number-panel { background: linear-gradient(135deg, #1a0a12, #2a0f1a); }
+  .m6 .module-tag { background: rgba(245,80,160,0.12); color: #f550a0; }
+  .m6 .lesson-dot { background: #f550a0; }
+
+  .m7 .module-number-panel { background: linear-gradient(135deg, #0d1a0a, #152a0d); }
+  .m7 .module-tag { background: rgba(100,200,80,0.12); color: #64c850; }
+  .m7 .lesson-dot { background: #64c850; }
+
+  /* ── TOOLS GRID ── */
+  .tools-section {
+    background: var(--surface);
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  .tool-emoji { font-size: 2rem; margin-bottom: 10px; display: block; }
+  .tool-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .tool-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .tool-level {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 1.5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+  .beginner { background: rgba(0,212,161,0.12); color: var(--teal); }
+  .intermediate { background: rgba(245,200,66,0.12); color: var(--gold); }
+  .pro { background: rgba(255,60,60,0.12); color: var(--accent); }
+
+  /* ── MONETIZATION SECTION ── */
+  .money-section {
+    padding: 100px 0;
+  }
+
+  .money-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .money-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s;
+  }
+
+  .money-card:hover { transform: translateY(-5px); }
+
+  .money-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .money-card.c1::before { background: linear-gradient(90deg, var(--accent), #ff8a3c); }
+  .money-card.c2::before { background: linear-gradient(90deg, var(--teal), #00a8d4); }
+  .money-card.c3::before { background: linear-gradient(90deg, var(--gold), #f5a828); }
+  .money-card.c4::before { background: linear-gradient(90deg, var(--purple), #e059ff); }
+
+  .money-icon { font-size: 2rem; margin-bottom: 16px; display: block; }
+  .money-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .money-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+  .money-earning {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+
+  /* ── TRENDS SECTION ── */
+  .trends-section {
+    background: var(--surface);
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .trend-ticker {
+    background: var(--accent);
+    color: white;
+    padding: 12px 0;
+    overflow: hidden;
+    margin-bottom: 64px;
+    position: relative;
+  }
+
+  .trend-ticker-inner {
+    display: flex;
+    gap: 48px;
+    white-space: nowrap;
+    animation: ticker 20s linear infinite;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .trends-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .trend-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    position: relative;
+    transition: transform 0.2s;
+  }
+
+  .trend-card:hover { transform: translateY(-4px); }
+
+  .trend-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.06);
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    line-height: 1;
+  }
+
+  .trend-emoji { font-size: 1.6rem; margin-bottom: 12px; display: block; }
+  .trend-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .trend-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; }
+  .trend-hot {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    background: rgba(255,60,60,0.1);
+    border-radius: 100px;
+    padding: 4px 10px;
+  }
+
+  /* ── RESOURCES ── */
+  .resources-section {
+    padding: 100px 0;
+  }
+
+  .resource-group {
+    margin-bottom: 48px;
+  }
+
+  .resource-group-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .resource-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .resource-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .resource-item:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateX(4px);
+  }
+
+  .resource-platform {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .yt { background: rgba(255,0,0,0.15); }
+  .gen { background: rgba(100,100,255,0.12); }
+
+  .resource-info { flex: 1; }
+  .resource-name { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
+  .resource-meta { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 1px; }
+
+  .resource-arrow { color: var(--muted); font-size: 0.8rem; }
+
+  /* ── ROADMAP ── */
+  .roadmap-section {
+    background: var(--surface);
+    padding: 100px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin-top: 48px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--purple), var(--teal));
+    border-radius: 2px;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -34px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-week {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .timeline-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .timeline-desc { font-size: 0.88rem; color: var(--muted); max-width: 580px; line-height: 1.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px 24px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 4px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-verse {
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 460px;
+    margin: 0 auto 28px;
+    line-height: 1.8;
+  }
+
+  .footer-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: #404060;
+    text-transform: uppercase;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .module {
+      grid-template-columns: 1fr;
+    }
+    .module-number-panel {
+      padding: 24px;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 16px;
+    }
+    .module-num { display: none; }
+    .module-body { border-left: none; border-top: 1px solid var(--border); }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">CLIP<span>EMPIRE</span></div>
+  <ul class="nav-links">
+    <li><a href="#modules">Modules</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#monetize">Monetize</a></li>
+    <li><a href="#trends">Trends</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-badge">
+    <span>🔴</span> Full-Time Career Course · 2026 Edition
+  </div>
+  <h1>
+    <div class="line1">BECOME A</div>
+    <div class="line2">FULL-TIME</div>
+    <div class="line3">CLIP EDITOR</div>
+  </h1>
+  <p class="hero-sub">The complete roadmap to mastering short-form video editing, landing clients, and building a sustainable income — from zero to full-time.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">40+</div>
+      <div class="stat-label">Lessons</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1.5B</div>
+      <div class="stat-label">YT Shorts Users</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$5K+</div>
+      <div class="stat-label">Avg Monthly Income</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M2 8l5 5 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Scroll to Begin
+  </div>
+</div>
+
+<!-- MODULES -->
+<section class="module-track" id="modules">
+  <div class="container">
+    <div class="track-header">
+      <span class="section-eyebrow">The Curriculum</span>
+      <h2 class="section-title">YOUR 7-MODULE <span>JOURNEY</span></h2>
+    </div>
+
+    <!-- MODULE 1 -->
+    <div class="module m1">
+      <div class="module-number-panel">
+        <div class="module-num">01</div>
+        <div class="module-icon">🎬</div>
+        <div class="module-tag">Foundation</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          THE MINDSET OF A CLIP EDITOR
+          <span class="badge" style="background:rgba(255,60,60,0.12);color:var(--accent);">Beginner</span>
+        </div>
+        <p class="module-desc">Before you touch a single edit, you need to think like a paid professional. This module dismantles the "hobbyist" mindset and replaces it with the systems-thinking of a working clip editor. You'll learn what the short-form industry actually pays for, why demand is exploding, and how to position yourself from day one as someone worth hiring — not just practicing.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>Clip Editor vs. Traditional Editor:</strong> Why short-form requires faster decision-making, platform awareness, and trend fluency that long-form editing does not demand</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The $250B Creator Economy:</strong> Understanding the full ecosystem — YouTube Shorts (2B+ monthly users), TikTok (1.1B daily active users), Instagram Reels — and where the money flows to editors</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Attention Economy Framework:</strong> How the human brain processes dopamine loops in short-form content, and how editors engineer those loops intentionally with pacing, hooks, and pattern interrupts</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Workspace Setup on Any Budget:</strong> Minimum viable setup (any laptop + CapCut free), mid-tier (i5/Ryzen 5, 16GB RAM, 1TB SSD), and pro setup (Apple M-series, external monitor, color-accurate display)</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Daily Study Habit:</strong> The "10 Virals a Day" framework — how to watch, dissect, and reverse-engineer the hook, structure, and retention strategy of successful shorts in under 20 minutes per day</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Folder Architecture & File Naming:</strong> The exact project folder structure used by professional editors managing multiple clients — raw footage / exports / client assets / templates / invoices — so you never lose a file again</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Your First 30-Day Sprint:</strong> A daily accountability structure for total beginners to go from zero edits to a 10-piece portfolio in one month, even working part-time</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"Whatever you do, work at it with all your heart, as working for the Lord, not for human masters."</div>
+          <div class="verse-ref">📖 Colossians 3:23</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 2 -->
+    <div class="module m2">
+      <div class="module-number-panel">
+        <div class="module-num">02</div>
+        <div class="module-icon">✂️</div>
+        <div class="module-tag">Core Skills</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          THE ART OF THE CUT
+          <span class="badge" style="background:rgba(0,212,161,0.12);color:var(--teal);">Core</span>
+        </div>
+        <p class="module-desc">Editing is not just cutting — it's rhythm, emotion, and engineering attention. You'll learn the professional system for mining viral moments out of long-form content (2-hour podcasts, Twitch VODs, lectures, interviews), then assembling them into tight, punchy shorts that hold 90%+ retention all the way to the final frame.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>Viral Moment Detection:</strong> Scan transcripts for emotional peaks — laughter, controversy, surprising facts, bold opinions. These 5 categories drive shares and can be found in any long video in under 5 minutes</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Hook Formula (First 3 Seconds):</strong> The OPEN loop technique — start mid-sentence, use a bold claim, show the ending first, or ask an irresistible question. Never waste the first frame on intros, logos, or "hey guys"</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Pacing & Cut Timing:</strong> Hard cuts every 2–4 seconds for fast-paced content, J-cuts and L-cuts for smooth interview edits, and how to use silence as a dramatic tool. The "no dead air" rule and when to break it deliberately</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Emotional Architecture in 60 Seconds:</strong> Structure every clip with a mini arc — hook → tension → payoff. Even a 30-second clip should feel like a complete experience with a satisfying resolution</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Reframing 16:9 → 9:16:</strong> Smart pan-and-scan techniques, auto-reframe in CapCut, and how to use B-roll cutaways to hide awkward aspect-ratio moments without cropping the speaker's face</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Music Sync & Sound Design:</strong> Royalty-free music sources (Epidemic Sound, Artlist, YouTube Audio Library), how to cut on the beat, and using whoosh transitions and sound effects to punctuate moments without overpowering the speaker</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The 80/20 Edit Workflow:</strong> Why 80% of your edit decisions should be locked on the first pass — and how to avoid the endless re-editing trap that destroys your output as a working editor</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"Commit your work to the Lord, and your plans will be established."</div>
+          <div class="verse-ref">📖 Proverbs 16:3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 3 -->
+    <div class="module m3">
+      <div class="module-number-panel">
+        <div class="module-num">03</div>
+        <div class="module-icon">🎨</div>
+        <div class="module-tag">Visual Identity</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          CAPTIONS, GRAPHICS & STYLE
+          <span class="badge" style="background:rgba(245,200,66,0.12);color:var(--gold);">Visual</span>
+        </div>
+        <p class="module-desc">Most editors cut. Great editors brand. This module teaches you how to build a complete visual identity — dynamic captions, color grading, graphic overlays, and animated text — that makes your edits instantly recognizable and keeps viewers glued even with sound completely off. Visual storytelling is your highest-leverage skill.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>Caption Systems That Retain:</strong> The 3 caption styles dominating 2026 — word-by-word highlight (MrBeast style), bold bottom-third bars, and kinetic subtitle pops. When to use each one and why the wrong font can kill retention</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Caption Design Science:</strong> Font hierarchy (thick display fonts at 80–120px), high-contrast color pairings, animated word emphasis, and the "active word" highlight effect that increases watch time by 15–30% according to A/B tests by top Shorts channels</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Color Grading for Short-Form:</strong> The 3 go-to LUT styles — punchy/saturated (lifestyle), moody/cinematic (motivational), and clean/bright (educational). How to apply and customize LUTs in CapCut, DaVinci, and Premiere in under 2 minutes per clip</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Kinetic Text & Motion Graphics:</strong> Creating pop-in titles, animated lower thirds, and text overlays using CapCut's built-in library and free After Effects templates from Motion Array and Envato</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>B-Roll & Stock Footage Integration:</strong> Free sources (Pexels, Pixabay, Coverr), paid sources (Storyblocks), and how to match B-roll to the spoken word so visuals reinforce — rather than distract from — the message</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Building a Client Template System:</strong> Create reusable project presets for each client: their brand fonts, colors, intro bumpers, and caption styles. Deliver a consistent look at scale without starting from scratch every edit</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Silent Viewer Test:</strong> Every edit must communicate its full value with the phone muted and the screen sideways. If your video fails this test, it fails the algorithm — here's your 5-point checklist to fix it before export</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"He has filled them with skill to do all kinds of work... and with all types of craftsmanship."</div>
+          <div class="verse-ref">📖 Exodus 35:35</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 4 -->
+    <div class="module m4">
+      <div class="module-number-panel">
+        <div class="module-num">04</div>
+        <div class="module-icon">🤖</div>
+        <div class="module-tag">AI Tools</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          AI-POWERED EDITING WORKFLOWS
+          <span class="badge" style="background:rgba(162,89,255,0.12);color:var(--purple);">Advanced</span>
+        </div>
+        <p class="module-desc">AI has permanently changed the editing landscape. Editors who use AI tools produce 5–10x more output in the same time — which means you can take on more clients, charge more, and deliver faster. This module builds a complete AI-assisted pipeline from raw long-form video to finished, captioned, exported short — without sacrificing creative quality.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>Opus Clip Deep Dive:</strong> How the "virality score" algorithm works, how to configure your clip preferences, and how to batch-process an entire YouTube channel's back catalog into shorts in one session. Pro tip: always manually review the top 3 clips before sending to clients</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Descript Transcript Editing:</strong> Edit video by editing words — delete a sentence in the transcript and the video cuts automatically. Overdub AI voice for seamless audio fixes. The fastest way to clip podcast content at professional quality</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>CapCut AI Suite:</strong> Auto-captions with speaker detection, voice isolation from noisy environments, AI smart trim (removes silences and filler words), background removal without green screen, and the AI text-to-video generator for B-roll creation</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Runway Gen-3 & kling AI:</strong> AI video enhancement (upscale low-quality footage to 4K), background replacement, motion blur addition, and generative B-roll — create cinematic visual elements from a text prompt and cut them into your edit</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>ElevenLabs & AI Voiceover:</strong> Clone a client's voice for consistent narration across their content, generate AI voiceovers for faceless channels, and add professional narration to clips without the client needing to record anything new</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Building the Full AI Pipeline:</strong> Long video → Opus Clip extracts moments → Descript cleans audio → CapCut AI adds captions and color → export to all 3 platforms simultaneously. This pipeline can process 10 finished shorts per hour with practice</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Human-AI Balance:</strong> AI handles the mechanical 70% — you own the creative 30%. Knowing when to override the algorithm, when to add a manual transition, and when the AI's suggested clip actually misses the emotional peak that a human would catch</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"The plans of the diligent lead to profit as surely as haste leads to poverty."</div>
+          <div class="verse-ref">📖 Proverbs 21:5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 5 -->
+    <div class="module m5">
+      <div class="module-number-panel">
+        <div class="module-num">05</div>
+        <div class="module-icon">📈</div>
+        <div class="module-tag">Trends</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          RIDING TRENDS LIKE A PRO
+          <span class="badge" style="background:rgba(66,145,245,0.12);color:#4291f5;">Strategy</span>
+        </div>
+        <p class="module-desc">Trends are free distribution. Knowing how to spot, adapt, and execute a trend before everyone else is the competitive advantage that gets your client's content in front of millions — not thousands. This module teaches trend intelligence as a daily professional system, not luck or guesswork. You'll understand how the algorithm thinks and how to feed it exactly what it rewards.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>How the Algorithm Works in 2026:</strong> YouTube Shorts uses a two-stage distribution model — a small test audience first, then a massive push if watch completion is high. TikTok's interest graph vs. YouTube's social graph — why the same content performs differently and how to optimize for each</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Trending Audio Intelligence:</strong> How to find trending sounds on TikTok's Creative Center and Instagram's Reels tab before they peak, use them inside 48 hours of their trend window, and legally layer them under client content (fair use vs. licensing rules)</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Format Playbook — The 8 Formats That Work in 2026:</strong> Fast-cut montage, talking head + B-roll, reaction clip, before/after reveal, list format ("5 things no one tells you..."), story arc, documentary-style, and silent visual storytelling — with examples and templates for each</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Vertical-First Principle:</strong> Shooting philosophy, editing safe zones (avoid placing text above 85% or below 15% of the frame), thumbnail optimization for the Shorts shelf, and how to use the full 9:16 canvas with graphic elements that boost visual density</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Hook Engineering in 2026:</strong> The 5 proven hook formulas — Contrast Hook ("Most people do X. Wrong."), Curiosity Hook ("Here's why top creators never do this..."), Stakes Hook ("I lost $50,000 because of this"), Social Proof Hook, and Direct Address Hook. Testing two hooks per clip and tracking which wins</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Retention Analytics:</strong> Reading the audience retention graph in YouTube Studio, identifying where viewers drop off, and reverse-engineering those drop points to fix pacing, hooks, or transitions in future edits. This is how you get clients results fast</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"There is a time for everything, and a season for every activity under the heavens."</div>
+          <div class="verse-ref">📖 Ecclesiastes 3:1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 6 -->
+    <div class="module m6">
+      <div class="module-number-panel">
+        <div class="module-num">06</div>
+        <div class="module-icon">💰</div>
+        <div class="module-tag">Business</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          LANDING CLIENTS & GETTING PAID
+          <span class="badge" style="background:rgba(245,80,160,0.12);color:#f550a0;">Business</span>
+        </div>
+        <p class="module-desc">You can be the best editor in the world and still be broke if no one knows you exist. This is the business module — the one that separates hobbyists from professionals. You'll learn how to build a client-ready portfolio from scratch, find and close paying clients within 30 days, price your services correctly, and build a sustainable, growing monthly income from your editing skill.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>Portfolio From Zero:</strong> Create 5–10 spec edits using free YouTube content from public creators. Choose a niche (fitness, business, motivation, comedy) and build a portfolio that positions you as a specialist — not a generalist. Specialists earn 40–60% more</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Where to Find Clients (Ranked by Conversion Rate):</strong> (1) Twitter/X DMs to creators with 10K–500K followers, (2) YouTube comment sections offering a free sample edit, (3) Reddit communities (r/editors, r/youtubers, r/entrepreneur), (4) Upwork and Fiverr for inbound leads, (5) LinkedIn for corporate/brand clients at premium rates</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The Cold DM Framework That Converts:</strong> 3-line DM structure — Personalized compliment (specific, not generic) → Problem identification (their content is inconsistent or their Shorts underperform) → Proof + offer (link to sample edit of THEIR content). Response rate: 15–25% when executed correctly</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Pricing Architecture:</strong> Beginner rate: $15–25/clip or $300–500/month retainer (10 clips). Mid-tier: $30–50/clip or $800–1,500/month. Advanced: $75–150/clip or $2,000–5,000/month packages for major brands. Never charge per hour — charge per deliverable</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Client Onboarding Process:</strong> Discovery call template (30 min), brand intake form, content access setup (Google Drive/Frame.io/Dropbox), revision policy (2 rounds max), payment terms (50% upfront for new clients), and delivery SLA (48–72 hours turnaround)</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Getting Testimonials & Case Studies:</strong> After month 1, email your client a 3-question survey. Turn their answers into a case study with before/after metrics (views, subscribers gained). Post it on your social — this becomes your best sales asset</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Raising Your Rates & Firing Bad Clients:</strong> Rate increase script for existing clients, how to identify clients who drain your time vs. pay your worth, and a graceful 30-day exit strategy that protects your reputation while freeing your capacity</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"Do you see someone skilled in their work? They will serve before kings; they will not serve before officials of low rank."</div>
+          <div class="verse-ref">📖 Proverbs 22:29</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 7 -->
+    <div class="module m7">
+      <div class="module-number-panel">
+        <div class="module-num">07</div>
+        <div class="module-icon">🚀</div>
+        <div class="module-tag">Scale</div>
+      </div>
+      <div class="module-body">
+        <div class="module-title">
+          SCALING TO FULL-TIME INCOME
+          <span class="badge" style="background:rgba(100,200,80,0.12);color:#64c850;">Scale</span>
+        </div>
+        <p class="module-desc">Getting your first client is a milestone. Building a business that runs without you is a transformation. This module teaches you how to systemize your editing workflow, delegate overflow work, diversify your income across multiple streams, and transition from "freelancer" to "agency owner" — so you're building an asset, not just trading time for money.</p>
+        <div class="lessons">
+          <div class="lesson"><span class="lesson-dot"></span><strong>SOPs (Standard Operating Procedures):</strong> Document every repeatable task in your workflow — clip selection criteria, export settings, delivery naming conventions, caption style per client. A well-documented SOP lets you hand work to a subcontractor without a single Zoom call</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Managing 5+ Clients Simultaneously:</strong> The batching method — dedicate Monday to all client intakes, Tuesday–Thursday to editing blocks, Friday to delivery and feedback. Use ClickUp or Notion with a client board, status tags, and auto-reminders so nothing falls through the cracks</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Launching Your Faceless Shorts Channel:</strong> Pick a niche with existing demand (finance facts, history moments, dark psychology, motivational speeches). Use public domain or properly licensed content. Monetize via YouTube Partner Program ($3–$10 per 1,000 Shorts views), affiliate links, and sponsorships. This becomes passive income while you sleep</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>UGC (User-Generated Content) for Brands:</strong> UGC creators earn $100–$800 per video creating raw, authentic-looking product content for brand ads. You don't need followers — you need your face (or a stand-in) and editing skill. Platforms: Billo, Trend.io, JoinBrands, direct brand outreach on LinkedIn</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Hiring Your First Subcontractor:</strong> When you're at 80% capacity, hire a junior editor at $8–15/clip. Use Upwork, Contra, or your own network. Train them using your SOPs. You now earn the margin between what you charge and what you pay — this is your agency model taking shape</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>Digital Product Income:</strong> Create and sell CapCut template packs, Lightroom/DaVinci LUT bundles, transition packs, or mini-courses on Gumroad or Payhip. Price at $17–$97. With an audience of 2,000 followers, a $47 product launch can generate $2,000–$10,000 in a single week</div>
+          <div class="lesson"><span class="lesson-dot"></span><strong>The $5,000/Month Breakdown:</strong> 4 retainer clients at $800/month = $3,200 · 1 UGC brand deal = $600 · Faceless channel AdSense = $400 · Template sales passive = $800. This is achievable within 6–9 months of consistent execution. Your roadmap starts now</div>
+        </div>
+        <div class="verse-box">
+          <div class="verse-text">"For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future."</div>
+          <div class="verse-ref">📖 Jeremiah 29:11</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TOOLS -->
+<section class="tools-section" id="tools">
+  <div class="container">
+    <span class="section-eyebrow">Arsenal</span>
+    <h2 class="section-title">YOUR <span>EDITING</span> TOOLKIT</h2>
+    <div class="tools-grid">
+      <div class="tool-card">
+        <span class="tool-emoji">🎬</span>
+        <div class="tool-name">CapCut</div>
+        <div class="tool-desc">The #1 short-form editing tool globally. AI auto-captions in 50+ languages, smart trim, voice isolation, trending template library, and one-click export optimized for TikTok, Shorts, and Reels. Free tier is sufficient for professional work.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🤖</span>
+        <div class="tool-name">Opus Clip</div>
+        <div class="tool-desc">Upload a 2-hour video and Opus Clip's AI extracts the best 10–20 clips, adds animated captions, assigns a virality score, and exports them in 9:16 — all automatically. Processes an entire YouTube channel's library in under an hour.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🎙️</span>
+        <div class="tool-name">Descript</div>
+        <div class="tool-desc">Edit video by editing text — delete words from the transcript and the video cuts automatically. Overdub replaces audio seamlessly with the speaker's cloned voice. The fastest tool for podcast clip editing at professional quality.</div>
+        <span class="tool-level intermediate">Intermediate</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🌊</span>
+        <div class="tool-name">DaVinci Resolve</div>
+        <div class="tool-desc">Free, Hollywood-grade editor with unmatched color grading tools. The Fusion page handles motion graphics; the Fairlight page handles audio mixing. Steeper learning curve, but the Color page alone is worth mastering for premium client work.</div>
+        <span class="tool-level intermediate">Intermediate</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">✈️</span>
+        <div class="tool-name">Runway Gen-3</div>
+        <div class="tool-desc">AI video generation and enhancement: upscale footage to 4K, remove backgrounds without green screen, generate cinematic B-roll from text prompts, and apply motion effects. Essential for faceless channels and premium brand content.</div>
+        <span class="tool-level pro">Pro</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">⚡</span>
+        <div class="tool-name">Adobe Premiere Rush</div>
+        <div class="tool-desc">Mobile-first Adobe editing with desktop-grade output. Auto-reframe, built-in music library, multi-platform export presets, and seamless Creative Cloud sync. Ideal for editors who move between phone and desktop throughout the day.</div>
+        <span class="tool-level intermediate">Intermediate</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🔊</span>
+        <div class="tool-name">Epidemic Sound</div>
+        <div class="tool-desc">The professional standard for royalty-free music and sound effects. $15/month unlocks unlimited tracks cleared for commercial use on all platforms — no copyright strikes, ever. Essential if you're monetizing client content or running your own channel.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">📊</span>
+        <div class="tool-name">Metricool</div>
+        <div class="tool-desc">Schedule and auto-publish across TikTok, YouTube Shorts, and Instagram Reels simultaneously. View analytics per platform, track follower growth, find best posting times, and generate client-ready performance reports in one dashboard.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🗣️</span>
+        <div class="tool-name">ElevenLabs</div>
+        <div class="tool-desc">Clone a speaker's voice for consistent narration across a faceless channel, or generate professional AI voiceovers in 30+ voices and 28 languages. Used by top faceless channels to produce daily content without any recording sessions.</div>
+        <span class="tool-level pro">Pro</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🖼️</span>
+        <div class="tool-name">Canva Pro</div>
+        <div class="tool-desc">Design thumbnails, channel art, client proposals, and animated social graphics. The video editor handles simple caption-only edits. Magic Resize converts designs to any platform's dimensions instantly. Pair with Canva's Brand Kit for client template systems.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">📁</span>
+        <div class="tool-name">Frame.io</div>
+        <div class="tool-desc">Client review platform that makes feedback loops professional. Clients leave timestamped comments directly on the video — no more "at 0:23" in emails. Integrated with Premiere Pro and DaVinci. Essential once you're managing 3+ clients simultaneously.</div>
+        <span class="tool-level intermediate">Intermediate</span>
+      </div>
+      <div class="tool-card">
+        <span class="tool-emoji">🗂️</span>
+        <div class="tool-name">Notion / ClickUp</div>
+        <div class="tool-desc">Run your editing business like a real company — client CRM, project boards, SOPs, content calendars, invoice trackers, and onboarding docs all in one place. The difference between a freelancer and an agency owner is documentation.</div>
+        <span class="tool-level beginner">Beginner Friendly</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MONETIZE -->
+<section class="money-section" id="monetize">
+  <div class="container">
+    <span class="section-eyebrow">Income Streams</span>
+    <h2 class="section-title">HOW TO <span>GET PAID</span></h2>
+    <p style="color:var(--muted);margin-top:16px;max-width:560px;font-size:0.9rem;">Short-form video editing is one of the most in-demand skills of 2026. Here are the most proven income paths you can combine into a full-time salary.</p>
+    <div class="money-grid">
+      <div class="money-card c1">
+        <span class="money-icon">🎯</span>
+        <div class="money-title">CLIENT RETAINERS</div>
+        <div class="money-desc">Work with YouTubers, coaches, podcasters, and personal brands to clip their long-form content into Shorts on a monthly basis. This is the most stable income stream.</div>
+        <div class="money-earning">💵 $300 – $2,000 per client / month</div>
+      </div>
+      <div class="money-card c2">
+        <span class="money-icon">📱</span>
+        <div class="money-title">UGC CONTENT CREATION</div>
+        <div class="money-desc">Brands pay creators to make raw, authentic-looking short videos promoting their products. No face required for some formats. UGC is exploding in 2026.</div>
+        <div class="money-earning">💵 $100 – $800 per video</div>
+      </div>
+      <div class="money-card c3">
+        <span class="money-icon">📺</span>
+        <div class="money-title">FACELESS CHANNELS</div>
+        <div class="money-desc">Run your own YouTube Shorts or TikTok channel using clipped, curated, or AI-generated content. Monetize through the Shorts fund, AdSense, and affiliate links.</div>
+        <div class="money-earning">💵 $200 – $5,000+/month at scale</div>
+      </div>
+      <div class="money-card c4">
+        <span class="money-icon">🛒</span>
+        <div class="money-title">DIGITAL PRODUCTS & TEMPLATES</div>
+        <div class="money-desc">Sell your caption presets, transition packs, edit templates, and CapCut templates. Create once, sell forever. Platforms: Gumroad, Payhip, Sellfy.</div>
+        <div class="money-earning">💵 $500 – $3,000 passive / month</div>
+      </div>
+    </div>
+    <div style="margin-top:36px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;">
+      <div style="font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;">Strategy Note</div>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.8;">Start with <strong style="color:var(--text);">2 retainer clients</strong> at $500/month each to hit your first $1K/month. Scale to 5–8 clients, delegate overflow work, and layer in UGC and digital products. Most editors hit $5K/month within 6–12 months of consistent outreach and quality work.</p>
+      <div class="verse-box" style="margin-top:20px;">
+        <div class="verse-text">"The blessing of the Lord brings wealth, without painful toil for it."</div>
+        <div class="verse-ref">📖 Proverbs 10:22</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRENDS -->
+<section class="trends-section" id="trends">
+  <div class="trend-ticker">
+    <div class="trend-ticker-inner">
+      <span>🔥 Vertical-First Content &nbsp;·&nbsp;</span>
+      <span>⚡ Ultra-Short 5–8 Sec Clips &nbsp;·&nbsp;</span>
+      <span>🤖 AI Auto-Editing &nbsp;·&nbsp;</span>
+      <span>🛒 Shoppable Videos &nbsp;·&nbsp;</span>
+      <span>🎵 Trending Audio Sync &nbsp;·&nbsp;</span>
+      <span>📸 Silent Storytelling &nbsp;·&nbsp;</span>
+      <span>🎙️ Video Podcasts (Vodcasts) &nbsp;·&nbsp;</span>
+      <span>👤 UGC Boom &nbsp;·&nbsp;</span>
+      <span>🔥 Vertical-First Content &nbsp;·&nbsp;</span>
+      <span>⚡ Ultra-Short 5–8 Sec Clips &nbsp;·&nbsp;</span>
+      <span>🤖 AI Auto-Editing &nbsp;·&nbsp;</span>
+      <span>🛒 Shoppable Videos &nbsp;·&nbsp;</span>
+      <span>🎵 Trending Audio Sync &nbsp;·&nbsp;</span>
+      <span>📸 Silent Storytelling &nbsp;·&nbsp;</span>
+    </div>
+  </div>
+  <div class="container">
+    <span class="section-eyebrow">2026 Intelligence</span>
+    <h2 class="section-title">TRENDS TO <span>EXPLOIT</span></h2>
+    <p style="color:var(--muted);margin-top:16px;max-width:560px;font-size:0.9rem;margin-bottom:48px;">These are the formats and behaviors dominating the algorithm right now. Master these and your clients will keep getting results — and keep paying you.</p>
+    <div class="trends-grid">
+      <div class="trend-card">
+        <span class="trend-num">01</span>
+        <span class="trend-emoji">📱</span>
+        <div class="trend-title">Vertical-First</div>
+        <div class="trend-desc">Phones are held vertically 94% of the time. Content filmed and edited in 9:16 occupies the full screen and drives significantly more engagement than cropped landscape video.</div>
+        <span class="trend-hot">🔥 Dominant Format</span>
+      </div>
+      <div class="trend-card">
+        <span class="trend-num">02</span>
+        <span class="trend-emoji">⚡</span>
+        <div class="trend-title">Ultra-Short Clips</div>
+        <div class="trend-desc">5–8 second punchy clips are outperforming longer shorts. Quick, information-dense edits that respect the viewer's time are winning the algorithm in 2026.</div>
+        <span class="trend-hot">🔥 Rising Fast</span>
+      </div>
+      <div class="trend-card">
+        <span class="trend-num">03</span>
+        <span class="trend-emoji">🎵</span>
+        <div class="trend-title">Trending Audio</div>
+        <div class="trend-desc">Using trending sounds dramatically boosts reach on TikTok and Reels. As an editor, staying on top of trending audio is part of your value proposition to clients.</div>
+        <span class="trend-hot">🔥 Algorithm Boost</span>
+      </div>
+      <div class="trend-card">
+        <span class="trend-num">04</span>
+        <span class="trend-emoji">🤖</span>
+        <div class="trend-title">AI-Assisted Editing</div>
+        <div class="trend-desc">Editors using AI produce 10x the output. Auto-captions, smart trimming, viral moment detection. This is no longer optional — it's table stakes for competitive editors.</div>
+        <span class="trend-hot">🔥 Industry Standard</span>
+      </div>
+      <div class="trend-card">
+        <span class="trend-num">05</span>
+        <span class="trend-emoji">📝</span>
+        <div class="trend-title">Silent Storytelling</div>
+        <div class="trend-desc">85% of videos are watched on mute. Bold captions, expressive visuals, and on-screen text that tells the full story without audio are essential editing skills now.</div>
+        <span class="trend-hot">🔥 Retention Driver</span>
+      </div>
+      <div class="trend-card">
+        <span class="trend-num">06</span>
+        <span class="trend-emoji">🛒</span>
+        <div class="trend-title">Shoppable & Interactive</div>
+        <div class="trend-desc">TikTok Shop, YouTube Shopping, and Instagram product tags are merging entertainment with commerce. Editors who understand this format will unlock brand deals.</div>
+        <span class="trend-hot">💰 Big Money</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section class="resources-section" id="resources">
+  <div class="container">
+    <span class="section-eyebrow">Learn From The Best</span>
+    <h2 class="section-title">RECOMMENDED <span>RESOURCES</span></h2>
+
+    <div class="resource-group" style="margin-top:48px;">
+      <div class="resource-group-title">
+        <span style="color:#ff0000;">▶</span> YouTube Channels to Study
+      </div>
+      <div class="resource-list">
+        <a class="resource-item" href="https://www.youtube.com/@YTShortsCreators" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">YouTube Shorts Creators</div>
+            <div class="resource-meta">YouTube · Official Platform Tips</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.youtube.com/results?search_query=short+form+video+editing+tutorial+2026" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">Short-Form Editing Tutorials</div>
+            <div class="resource-meta">YouTube · Search Results 2026</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.youtube.com/results?search_query=capcut+tutorial+for+beginners+2026" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">CapCut Beginners Guide 2026</div>
+            <div class="resource-meta">YouTube · Search Results</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.youtube.com/results?search_query=how+to+land+video+editing+clients+2026" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">How to Land Video Editing Clients</div>
+            <div class="resource-meta">YouTube · Business Strategy</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.youtube.com/results?search_query=davinci+resolve+short+form+editing" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">DaVinci Resolve for Short-Form</div>
+            <div class="resource-meta">YouTube · Advanced Editing</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.youtube.com/results?search_query=opus+clip+tutorial+AI+clipping" target="_blank">
+          <div class="resource-platform yt">▶</div>
+          <div class="resource-info">
+            <div class="resource-name">Opus Clip AI Tutorial</div>
+            <div class="resource-meta">YouTube · AI Tools</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="resource-group">
+      <div class="resource-group-title">
+        <span style="color:var(--purple);">⬡</span> Platforms & Communities
+      </div>
+      <div class="resource-list">
+        <a class="resource-item" href="https://www.reddit.com/r/videography/" target="_blank">
+          <div class="resource-platform gen">R</div>
+          <div class="resource-info">
+            <div class="resource-name">r/videography</div>
+            <div class="resource-meta">Reddit · Community & Critique</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.upwork.com" target="_blank">
+          <div class="resource-platform gen">U</div>
+          <div class="resource-info">
+            <div class="resource-name">Upwork — Freelance Clients</div>
+            <div class="resource-meta">Freelance Platform · Find Gigs</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://opus.pro" target="_blank">
+          <div class="resource-platform gen">AI</div>
+          <div class="resource-info">
+            <div class="resource-name">Opus Clip</div>
+            <div class="resource-meta">AI Clipping Tool · Free Trial</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+        <a class="resource-item" href="https://www.capcut.com" target="_blank">
+          <div class="resource-platform gen">CC</div>
+          <div class="resource-info">
+            <div class="resource-name">CapCut Editor</div>
+            <div class="resource-meta">Free Editing Tool · Beginner Friendly</div>
+          </div>
+          <span class="resource-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 32px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--text);margin-bottom:10px;">📚 DAILY PRACTICE CHALLENGE</div>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.8;">Watch 3 viral Shorts every morning. Identify: (1) What was the hook? (2) What editing technique kept you watching? (3) What would you do differently? Log your analysis in a Notion doc. After 30 days, you'll have a mental library of what works.</p>
+      <div class="verse-box" style="margin-top:20px;">
+        <div class="verse-text">"Apply your heart to instruction and your ears to words of knowledge."</div>
+        <div class="verse-ref">📖 Proverbs 23:12</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="roadmap-section" id="roadmap">
+  <div class="container">
+    <span class="section-eyebrow">Action Plan</span>
+    <h2 class="section-title">YOUR <span>90-DAY</span> ROADMAP</h2>
+    <p style="color:var(--muted);margin-top:16px;max-width:500px;font-size:0.9rem;">Follow this sequence to go from beginner to your first paid client and beyond.</p>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--accent);"></div>
+        <div class="timeline-week">Week 1–2</div>
+        <div class="timeline-title">FOUNDATION SETUP</div>
+        <div class="timeline-desc">Install CapCut and Descript. Study 20 viral Shorts in your niche. Build your folder structure and workflow. Complete Module 1 & 2.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#f5a050;"></div>
+        <div class="timeline-week">Week 3–4</div>
+        <div class="timeline-title">EDIT EVERY DAY</div>
+        <div class="timeline-desc">Create 1 edit per day using free YouTube content. Focus on hooks, captions, and pacing. Build a portfolio of 14+ clips. Post your best 3–5 on social.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--gold);"></div>
+        <div class="timeline-week">Week 5–6</div>
+        <div class="timeline-title">AI WORKFLOW MASTERY</div>
+        <div class="timeline-desc">Integrate Opus Clip and CapCut AI into your pipeline. Test your processing speed — aim to deliver 5 polished shorts per hour. Build 2–3 caption templates.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--teal);"></div>
+        <div class="timeline-week">Week 7–8</div>
+        <div class="timeline-title">FIRST OUTREACH</div>
+        <div class="timeline-desc">Send 10 cold DMs per day to mid-size YouTubers offering a free trial edit. Ask for feedback and a testimonial. Land your first 1–2 paid clients at $300–500/month.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:var(--purple);"></div>
+        <div class="timeline-week">Week 9–10</div>
+        <div class="timeline-title">SCALE UP CLIENTS</div>
+        <div class="timeline-desc">With testimonials in hand, raise your rates. Target 4–5 active clients. Explore Upwork, Twitter/X, and LinkedIn for corporate or brand clients with higher budgets.</div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background:#64c850;"></div>
+        <div class="timeline-week">Week 11–12</div>
+        <div class="timeline-title">DIVERSIFY & SYSTEMIZE</div>
+        <div class="timeline-desc">Launch a faceless Shorts channel, package your templates for sale, and document your SOPs to delegate work. You're now building a business, not just a job.</div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:40px;background:linear-gradient(135deg,rgba(255,60,60,0.08),rgba(162,89,255,0.08));border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:36px;text-align:center;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:var(--text);margin-bottom:8px;">THE GOAL IS FREEDOM</div>
+      <p style="font-size:0.9rem;color:var(--muted);max-width:500px;margin:0 auto 24px;line-height:1.8;">Short-form video editing is not just a skill — it's a vehicle to work from anywhere, set your own hours, and build income that reflects your effort. The market is massive. The need is real. You just have to start.</p>
+      <div class="verse-box" style="max-width:480px;margin:0 auto;">
+        <div class="verse-text">"I can do all this through him who gives me strength."</div>
+        <div class="verse-ref">📖 Philippians 4:13</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">CLIP<span>EMPIRE</span></div>
+  <p class="footer-verse">"Commit to the Lord whatever you do, and he will establish your plans." — Proverbs 16:3</p>
+  <p class="footer-sub">Full-Time Short-Form Video Editor Course · 2026 Edition · Built with Purpose</p>
+</footer>
+
+</body>
+</html
